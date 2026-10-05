@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-super-fat {
+    font-family: 'Mali', 'Comfortaa', cursive, sans-serif;
+  }
+}
+
+body {
+  margin: 0;
+  background-color: #0f172a;
+  color: white;
+  user-select: none;
+}
