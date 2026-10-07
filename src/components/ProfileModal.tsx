@@ -337,8 +337,8 @@ export const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, isM
                 <div className="bg-slate-800/80 border border-slate-700/80 p-4 rounded-2xl">
                   <div className="font-bold text-amber-300 text-sm mb-1">Q: Liên hệ hỗ trợ kỹ thuật và thanh toán ở đâu?</div>
                   <div className="text-xs text-slate-300 leading-relaxed space-y-1 mt-1">
-                    <div>📧 Email: <span className="text-white font-bold">support@kenlearning.vn</span></div>
-                    <div>☎️ Hotline / Zalo: <span className="text-white font-bold">1900 xxxx (8:00 - 21:00)</span></div>
+                    <div>📧 Email: <span className="text-white font-bold">kén.education.26@gmail.com</span></div>
+                    <div>☎️ Hotline / Zalo: <span className="text-white font-bold">0345440028 (8:00 - 21:00)</span></div>
                   </div>
                 </div>
               </div>

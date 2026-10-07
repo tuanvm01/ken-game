@@ -162,8 +162,10 @@ export const GameScene: React.FC = () => {
   if (!currentScenario) return null;
 
   const displayImage = phase === 'context' 
-    ? currentScenario.baseImages[0] 
-    : (selectedCard?.resultImages[0] || currentScenario.baseImages[0]);
+  ? (currentScenario.baseImages[0]?.startsWith('http') ? currentScenario.baseImages[0] : `${import.meta.env.BASE_URL}${currentScenario.baseImages[0]?.replace(/^\//, '')}`) 
+  : (selectedCard?.resultImages?.[0] 
+      ? (selectedCard.resultImages[0].startsWith('http') ? selectedCard.resultImages[0] : `${import.meta.env.BASE_URL}${selectedCard.resultImages[0].replace(/^\//, '')}`)
+      : `${import.meta.env.BASE_URL}${currentScenario.baseImages[0]?.replace(/^\//, '')}`);
 
   const handleCardClick = (card: any, index: number, isWrong: boolean) => {
     if (isWrong) return;
@@ -286,10 +288,10 @@ export const GameScene: React.FC = () => {
                       }`}
                     >
                       <img 
-                        src={card.image} 
-                        alt={card.title} 
-                        className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-500 group-hover:scale-110 pointer-events-none" 
-                      />
+  src={card.image.startsWith('http') ? card.image : `${import.meta.env.BASE_URL}${card.image.replace(/^\//, '')}`} 
+  alt={card.title} 
+  className="absolute inset-0 w-full h-full object-cover z-0 transition-transform duration-500 group-hover:scale-110 pointer-events-none" 
+/>
 
                       <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/60 to-transparent z-10 pointer-events-none" />
 

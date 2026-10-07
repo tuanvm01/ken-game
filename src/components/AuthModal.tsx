@@ -130,7 +130,7 @@ export const AuthModal: React.FC = () => {
   return (
     <div 
       className="fixed inset-0 bg-cover bg-center bg-no-repeat flex items-center justify-center p-4 z-50 font-cute select-none"
-      style={{ backgroundImage: `url('/images/BG4.png')` }}
+      style={{ backgroundImage: `url('${import.meta.env.BASE_URL}images/BG4.png')` }}
     >
       {/* Lớp phủ tối màu giúp nội dung form nổi bật trên nền BG4 */}
       <div className="absolute inset-0 bg-slate-950/75 backdrop-blur-sm pointer-events-none" />

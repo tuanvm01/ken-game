@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Sparkles, ShieldCheck, QrCode } from 'lucide-react';
+import { X, Check, Sparkles, QrCode } from 'lucide-react';
 import { useGameStore } from '../store/useGameStore';
 import { soundManager } from '../utils/audio';
 
@@ -108,7 +108,6 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, on
                     <div className="font-black text-base text-white">Hàng tháng</div>
                     <div className="text-xs text-slate-400 mt-1">Trải nghiệm linh hoạt</div>
                   </div>
-                  {/* SỬA LỖI Ở ĐÂY: Dùng flex, items-center và gap-4 để xếp hàng ngang */}
                   <div className="flex items-center gap-4">
                     <div className="text-right">
                       <div className="font-black text-amber-400 text-lg">59.000đ</div>
@@ -144,7 +143,6 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, on
                     </div>
                     <div className="text-xs text-slate-400 mt-1">Đầu tư một lần, chơi mãi mãi</div>
                   </div>
-                  {/* SỬA LỖI Ở ĐÂY: Dùng flex, items-center và gap-4 để xếp hàng ngang */}
                   <div className="flex items-center gap-4">
                     <div className="text-right">
                       <div className="font-black text-amber-400 text-lg">599.000đ</div>
@@ -181,14 +179,22 @@ export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, on
                 Sử dụng ứng dụng Ngân hàng hoặc Momo để quét mã bên dưới
               </p>
 
-              {/* Khung ảnh QR Giả lập */}
-              <div className="bg-white p-4 rounded-2xl w-48 h-48 mx-auto mb-6 shadow-2xl flex items-center justify-center relative">
-                <div className="absolute inset-4 border-4 border-dashed border-slate-300 rounded-xl flex flex-col items-center justify-center text-slate-800">
-                  <span className="font-black text-sm text-center">MÃ QR<br/>MOMO / BANK</span>
-                  <span className="text-[10px] font-bold text-amber-600 mt-2 bg-amber-100 px-2 py-1 rounded-md">
-                    {selectedPlan === 'monthly' ? '59.000đ' : '599.000đ'}
-                  </span>
-                </div>
+              {/* Ảnh QR CODE */}
+              <div className="bg-white p-2 rounded-2xl w-56 h-56 mx-auto mb-6 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
+                <img 
+                  // Đã đổi sang đuôi .png (Nếu file của bạn là .PNG viết hoa thì sửa lại thành .PNG nhé)
+                  src={`${import.meta.env.BASE_URL}images/QR.png`} 
+                  alt="Mã QR Thanh Toán" 
+                  className="w-full h-full object-contain rounded-xl"
+                  onError={(e) => {
+                    // Fallback nếu ảnh lỗi
+                    e.currentTarget.src = "https://placehold.co/400x400/png?text=QR+Code";
+                  }}
+                />
+                {/* Nhãn hiển thị giá tiền nổi lên trên góc */}
+                <span className="absolute bottom-3 text-[11px] font-black text-amber-700 bg-amber-100/95 px-3 py-1.5 rounded-full shadow-md backdrop-blur-sm border border-amber-200">
+                  {selectedPlan === 'monthly' ? '59.000đ' : '599.000đ'}
+                </span>
               </div>
 
               {isSuccess ? (

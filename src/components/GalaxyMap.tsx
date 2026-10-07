@@ -21,7 +21,7 @@ export const GalaxyMap: React.FC = () => {
   const { setActivePlanet, completedPlanetIds, setLeaderboardOpen } = useGameStore();
 
   const ITEMS_PER_PAGE = 3;
-  const TOTAL_PLANETS = 5; 
+  const TOTAL_PLANETS = 6; // Đã tăng lên 6 để hiển thị thêm hành tinh Coming Soon ở cuối
   const totalPages = Math.ceil(TOTAL_PLANETS / ITEMS_PER_PAGE);
 
   const handleNextPage = () => {
@@ -53,7 +53,7 @@ export const GalaxyMap: React.FC = () => {
     }
     return { 
       id: `locked-planet-${idx}`, 
-      title: 'Sắp ra mắt', 
+      title: 'Coming Soon', 
       color: 'bg-slate-800', 
       icon: 'Lock', 
       thumbnail: '', 
@@ -73,7 +73,7 @@ export const GalaxyMap: React.FC = () => {
       {/* Background Ảnh Galaxy */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: "url('/images/bg_galaxy.png')" }}
+        style={{ backgroundImage: `url('${import.meta.env.BASE_URL}images/bg_galaxy.png')` }}
       >
         <div className="absolute inset-0 bg-slate-950/40"></div>
       </div>
@@ -165,7 +165,7 @@ export const GalaxyMap: React.FC = () => {
                         </div>
                       ) : (
                         <img 
-                          src={planet.thumbnail} 
+                          src={planet.thumbnail.startsWith('http') ? planet.thumbnail : `${import.meta.env.BASE_URL}${planet.thumbnail.startsWith('/') ? planet.thumbnail.slice(1) : planet.thumbnail}`} 
                           alt={planet.title} 
                           className="w-full h-full object-cover rounded-full shadow-[0_0_20px_rgba(255,255,255,0.2)] z-10 border-[4px] border-white/30"
                           onError={(e) => {
@@ -190,7 +190,7 @@ export const GalaxyMap: React.FC = () => {
                     <span className={`font-black text-lg md:text-xl tracking-wide ${
                       isUnlocked && !planet.isDummy ? 'text-amber-300' : 'text-slate-400'
                     }`}>
-                      {planet.isDummy ? 'Hành tinh Ẩn' : (!isUnlocked ? 'Hành tinh Khóa' : planet.title)}
+                      {planet.isDummy ? 'Coming Soon' : (!isUnlocked ? 'Hành tinh Khóa' : planet.title)}
                     </span>
                   </div>
                 </motion.div>

@@ -4,7 +4,7 @@ import { GalaxyMap } from './components/GalaxyMap';
 import { GameScene } from './components/GameScene';
 import { AuthModal } from './components/AuthModal';
 import { ProfileModal } from './components/ProfileModal';
-import { SubscriptionModal } from './components/SubscriptionModal'; // Import modal thanh toán VIP
+import { SubscriptionModal } from './components/SubscriptionModal';
 import { HomeScreen } from './components/HomeScreen';
 import { LogOut, User as UserIcon, AlertCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 export function App() {
   const { user, setUser, activePlanetId, setActivePlanet } = useGameStore();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
-  const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false); // State quản lý hiển thị Modal VIP
+  const [isSubscriptionOpen, setIsSubscriptionOpen] = useState(false);
   const [hasStartedPlay, setHasStartedPlay] = useState(false);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
 
@@ -32,7 +32,7 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-slate-950 relative font-cute">
-      {/* Nút Home góc trái */}
+      {/* Nút Home góc trái - Đã sửa đường dẫn có BASE_URL */}
       {hasStartedPlay && activePlanetId === null && (
         <button
           onClick={handleGoHome}
@@ -40,7 +40,7 @@ export function App() {
           className="absolute top-4 left-4 z-50 focus:outline-none cursor-pointer transition-transform hover:scale-110 active:scale-95 drop-shadow-[0_4px_12px_rgba(0,0,0,0.6)]"
         >
           <img
-            src="/images/icon_home.png"
+            src={`${import.meta.env.BASE_URL}images/icon_home.png`}
             alt="Home Icon"
             className="w-16 h-16 md:w-30 md:h-30 object-contain"
           />
@@ -69,14 +69,14 @@ export function App() {
         <GameScene />
       )}
 
-      {/* Modal Hồ Sơ cá nhân - Tích hợp callback mở gói Premium */}
+      {/* Modal Hồ Sơ cá nhân */}
       <ProfileModal 
         isOpen={isProfileOpen} 
         onClose={() => setIsProfileOpen(false)} 
         isMandatory={isFirstTimeSetup} 
         onOpenSubscription={() => {
-          setIsProfileOpen(false);       // Đóng bảng hồ sơ
-          setIsSubscriptionOpen(true);   // Mở ngay bảng chọn gói VIP / Quét QR
+          setIsProfileOpen(false);
+          setIsSubscriptionOpen(true);
         }}
       />
 
