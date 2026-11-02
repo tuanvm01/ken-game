@@ -38,9 +38,9 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onPlay, onOpenSettings }
 
       {/* ================= 2. CỤM HÀNH TINH & NẤM ================= */}
       <motion.div
-        animate={{ y: [0, -20, 0] }}
+        animate={{ y: [0, -15, 0] }}
         transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
-        className="absolute -bottom-16 -left-16 md:-bottom-28 md:-left-24 w-[115vw] md:w-[90vw] max-w-[1500px] z-10 pointer-events-none"
+        className="absolute -bottom-12 left-0 md:-bottom-20 md:left-2 w-[126vw] md:w-[98vw] max-w-[1680px] z-10 pointer-events-none"
       >
         <img
           src={`${import.meta.env.BASE_URL}images/homepage_tachnen.png`} 
@@ -48,55 +48,58 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onPlay, onOpenSettings }
           className="w-full h-auto object-contain"
           onError={(e) => { e.currentTarget.src = `${import.meta.env.BASE_URL}images/Homepage_htinh.jpg`; }}
         />
-
-        
       </motion.div>
 
-      {/* ================= 3. CHỮ KÉN ================= */}
-      <div className="absolute right-12 md:right-52 bottom-[45%] md:bottom-[48%] z-40 text-center pointer-events-none">
+      {/* ================= CHỮ KÉN & CỤM NÚT ĐIỀU HƯỚNG ================= */}
+      <div className="absolute right-8 md:right-24 lg:right-36 top-65 -translate-y-1/2 z-40 flex flex-col items-center gap-2">
+        
+        {/* Chữ KÉN */}
         <motion.div
           animate={{ scale: [1, 1.06, 1], rotate: [-2, 2, -2] }}
           transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+          className="pointer-events-none flex justify-center mb-2"
         >
-          <h1 className="text-7xl md:text-9xl font-black tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-yellow-200 via-pink-300 to-purple-400 drop-shadow-[0_10px_25px_rgba(236,72,153,0.8)] filter drop-shadow(0 0 35px rgba(234,179,8,0.5)) font-sans">
-            KÉN
-          </h1>
+          <img
+            src={`${import.meta.env.BASE_URL}images/chuKen.png`} 
+            alt="Kén"
+            className="w-98 md:w-[630px] lg:w-[700px] h-auto object-contain drop-shadow-[0_20px_40px_rgba(0,0,0,0.7)]"
+            onError={(e) => { e.currentTarget.src = `${import.meta.env.BASE_URL}images/Homepage_htinh.jpg`; }}
+          />
         </motion.div>
-      </div>
 
-      {/* ================= 4. NÚT PLAY VÀ SETTING ================= */}
-      <div className="absolute bottom-8 right-10 md:right-20 lg:right-28 z-50 flex flex-row items-center gap-6">
-        
-        {/* Nút Play (Bên trái): Gọi onPlay để vào game */}
-        <motion.button
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.92 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            soundManager.playPop();
-            soundManager.playBgm();
-            onPlay(); 
-          }}
-          className="cursor-pointer focus:outline-none drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] transition-shadow hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.7)]"
-        >
-          <img src={`${import.meta.env.BASE_URL}images/btn_play.png`} alt="Bắt đầu chơi" className="h-30 md:h-54 lg:h-58 w-auto object-contain" />
-        </motion.button>
+        {/* Cụm Nút Play & Setting (Kéo cực sát nhau) */}
+        <div className="absolute top-135 flex flex-col items-center -space-y-32 md:-space-y-38 lg:-space-y-46 z-50">
+          
+          {/* Nút Play */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              soundManager.playPop();
+              soundManager.playBgm();
+              onPlay(); 
+            }}
+            className="cursor-pointer focus:outline-none drop-shadow-[0_0_20px_rgba(255,255,255,0.5)] transition-shadow hover:drop-shadow-[0_0_30px_rgba(255,255,255,0.8)] relative z-10"
+          >
+            <img src={`${import.meta.env.BASE_URL}images/btn_play.png`} alt="Bắt đầu chơi" className="h-36 md:h-58 lg:h-80 w-auto object-contain" />
+          </motion.button>
 
-        {/* Nút Setting (Bên phải): Gọi mở Cài đặt (Hoặc mở Profile tùy logic của bạn, ở đây gọi onOpenSettings) */}
-        <motion.button
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.92 }}
-          onClick={(e) => {
-            e.stopPropagation();
-            soundManager.playPop();
-            // Mở Cài đặt âm thanh (hoặc bạn có thể đổi thành setProfileOpen(true) nếu muốn mở Profile)
-            onOpenSettings();
-          }}
-          className="cursor-pointer focus:outline-none drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] transition-shadow hover:drop-shadow-[0_0_20px_rgba(255,255,255,0.5)]"
-        >
-          <img src={`${import.meta.env.BASE_URL}images/btn_setting.png`} alt="Cài đặt" className="h-30 md:h-54 lg:h-58 w-auto object-contain" />
-        </motion.button>
+          {/* Nút Setting */}
+          <motion.button
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.92 }}
+            onClick={(e) => {
+              e.stopPropagation();
+              soundManager.playPop();
+              onOpenSettings();
+            }}
+            className="cursor-pointer focus:outline-none drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] transition-shadow hover:drop-shadow-[0_0_25px_rgba(255,255,255,0.7)] relative z-0"
+          >
+            <img src={`${import.meta.env.BASE_URL}images/btn_setting.png`} alt="Cài đặt" className="h-36 md:h-58 lg:h-80 w-auto object-contain" />
+          </motion.button>
 
+        </div>
       </div>
 
       <ProfileModal isOpen={isProfileOpen} onClose={() => setProfileOpen(false)} onOpenSubscription={() => setSubOpen(true)} />
