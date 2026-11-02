@@ -38,27 +38,18 @@ export const HomeScreen: React.FC<HomeScreenProps> = ({ onPlay, onOpenSettings }
 
       {/* ================= 2. CỤM HÀNH TINH & NẤM ================= */}
       <motion.div
-        animate={{ y: [0, -25, 0] }}
+        animate={{ y: [0, -20, 0] }}
         transition={{ repeat: Infinity, duration: 6, ease: "easeInOut" }}
         className="absolute -bottom-16 -left-16 md:-bottom-28 md:-left-24 w-[115vw] md:w-[90vw] max-w-[1500px] z-10 pointer-events-none"
       >
         <img
-          src={`${import.meta.env.BASE_URL}images/Homepage_htinh.png`} 
+          src={`${import.meta.env.BASE_URL}images/homepage_tachnen.png`} 
           alt="Hành tinh"
           className="w-full h-auto object-contain"
           onError={(e) => { e.currentTarget.src = `${import.meta.env.BASE_URL}images/Homepage_htinh.jpg`; }}
         />
 
-        <motion.img
-          src={`${import.meta.env.BASE_URL}images/Homepage_nam.png`}
-          alt="Cây nấm"
-          animate={{ 
-            scaleX: [1, 1.05, 0.95, 1.03, 1],
-            scaleY: [1, 0.95, 1.05, 0.97, 1]
-          }}
-          transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-          className="absolute top-[-3%] left-[7%] w-[95%] h-auto object-contain drop-shadow-[0_25px_25px_rgba(0,0,0,0.6)] origin-bottom"
-        />
+        
       </motion.div>
 
       {/* ================= 3. CHỮ KÉN ================= */}

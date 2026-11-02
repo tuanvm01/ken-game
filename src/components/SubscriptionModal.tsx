@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, Check, Sparkles, QrCode } from 'lucide-react';
-import { useGameStore } from '../store/useGameStore';
 import { soundManager } from '../utils/audio';
+import { Check, X, Shield } from 'lucide-react';
 
 interface SubscriptionModalProps {
   isOpen: boolean;
@@ -10,217 +9,231 @@ interface SubscriptionModalProps {
 }
 
 export const SubscriptionModal: React.FC<SubscriptionModalProps> = ({ isOpen, onClose }) => {
-  const { user, setUser } = useGameStore();
-  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'lifetime'>('lifetime');
-  const [showQrStep, setShowQrStep] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState<'monthly' | 'lifetime'>('monthly');
+  const [step, setStep] = useState<'plans' | 'qr' | 'success'>('plans');
 
   if (!isOpen) return null;
 
-  const handlePaymentConfirm = () => {
+  const handleSelectPlan = (plan: 'monthly' | 'lifetime') => {
     soundManager.playPop();
-    setIsSuccess(true);
-    
-    // Cập nhật trạng thái VIP cho user trong store
-    if (user) {
-      setUser({
-        ...user,
-        isVip: true,
-        vipPlan: selectedPlan,
-      } as any);
-    }
+    setSelectedPlan(plan);
+  };
 
+  const handleProceedPayment = () => {
+    soundManager.playPop();
+    setStep('qr');
+  };
+
+  const handleConfirmTransfer = () => {
+    soundManager.playPop();
+    setStep('success');
     setTimeout(() => {
-      setIsSuccess(false);
-      setShowQrStep(false);
+      setStep('plans');
       onClose();
-    }, 2000);
+    }, 3000);
+  };
+
+  const handleBackToPlans = () => {
+    soundManager.playPop();
+    setStep('plans');
   };
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 z-50 font-cute select-none">
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          exit={{ scale: 0.8, opacity: 0 }}
-          className="bg-slate-900 border-2 border-amber-500/40 rounded-3xl max-w-lg w-full p-6 md:p-8 shadow-[0_0_50px_rgba(245,158,11,0.2)] relative text-white max-h-[90vh] overflow-y-auto custom-scrollbar"
-        >
-          {/* Nút đóng */}
-          <button
-            onClick={() => {
-              soundManager.playPop();
-              setShowQrStep(false);
-              onClose();
-            }}
-            className="absolute top-5 right-5 p-2 rounded-full bg-slate-800 hover:bg-slate-700 text-slate-400 hover:text-white transition-all cursor-pointer"
+      {isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 font-cute select-none overflow-y-auto">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0, y: 20 }}
+            animate={{ scale: 1, opacity: 1, y: 0 }}
+            exit={{ scale: 0.8, opacity: 0, y: 20 }}
+            className="relative w-full max-w-[460px] flex flex-col items-center my-auto"
           >
-            <X size={20} />
-          </button>
-
-          {!showQrStep ? (
-            <>
-              {/* Header Banner */}
-              <div className="bg-gradient-to-r from-purple-900/60 via-indigo-900/60 to-slate-900 border border-purple-500/30 rounded-2xl p-5 text-center mb-6 shadow-inner">
-                <div className="inline-flex p-3 bg-amber-400/10 border border-amber-400/30 rounded-2xl text-amber-300 mb-2 shadow-lg animate-bounce">
-                  <Sparkles size={28} />
-                </div>
-                <h2 className="text-xl md:text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-300 to-amber-400">
-                  Mở khóa toàn bộ hành trình khám phá
-                </h2>
-              </div>
-
-              {/* Danh sách quyền lợi */}
-              <div className="space-y-3 mb-6 text-sm md:text-base font-semibold">
-                <div className="flex items-center gap-3 text-slate-200">
-                  <span className="text-xl">🪐</span> Mở khóa tất cả 5 hành tinh
-                </div>
-                <div className="flex items-center gap-3 text-slate-200">
-                  <span className="text-xl">🚫</span> Không có quảng cáo
-                </div>
-                <div className="flex items-center gap-3 text-slate-200">
-                  <span className="text-xl">📊</span> Báo cáo chi tiết cho ba/mẹ
-                </div>
-                <div className="flex items-center gap-3 text-slate-200">
-                  <span className="text-xl">🎯</span> Thử thách đặc biệt mỗi tuần
-                </div>
-                <div className="flex items-center gap-3 text-slate-200">
-                  <span className="text-xl">🏆</span> Huy hiệu và phần thưởng độc quyền
-                </div>
-              </div>
-
-              {/* Các gói lựa chọn */}
-              <div className="space-y-3 mb-6">
+            {/* ================= BƯỚC 1: CHỌN GÓI PREMIUM ================= */}
+            {step === 'plans' && (
+              <div className="relative w-full flex flex-col items-center bg-[#F8F7FF] rounded-[36px] border-4 border-[#5B42F3] shadow-[0_12px_40px_rgba(91,66,243,0.3)] overflow-hidden p-6">
                 
-                {/* Gói Hàng tháng */}
-                <div
+                {/* Nút Đóng (X) */}
+                <button 
                   onClick={() => {
                     soundManager.playPop();
-                    setSelectedPlan('monthly');
+                    onClose();
                   }}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between ${
-                    selectedPlan === 'monthly'
-                      ? 'bg-purple-950/40 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
-                      : 'bg-slate-800/60 border-slate-700 hover:border-slate-600'
-                  }`}
+                  className="absolute top-5 right-5 hover:scale-110 active:scale-95 transition-transform cursor-pointer z-10"
                 >
-                  <div>
-                    <div className="font-black text-base text-white">Hàng tháng</div>
-                    <div className="text-xs text-slate-400 mt-1">Trải nghiệm linh hoạt</div>
+                  <div className="w-8 h-8 rounded-full bg-[#5B42F3] text-white flex items-center justify-center shadow-md">
+                    <X size={18} />
                   </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <div className="font-black text-amber-400 text-lg">59.000đ</div>
-                      <div className="text-[10px] text-slate-400">/tháng</div>
+                </button>
+
+                {/* Header */}
+                <div className="flex flex-col items-center text-center mt-2 mb-4">
+                  <div className="w-16 h-16 rounded-full bg-[#E0E7FF] border-2 border-[#5B42F3] flex items-center justify-center mb-3 shadow-inner">
+                    <span className="text-3xl">🏆</span>
+                  </div>
+                  <span className="text-[10px] font-black text-[#5B42F3] uppercase tracking-wider mb-0.5">VÉ THÔNG HÀNH KÉN</span>
+                  <h2 className="text-xl font-black text-slate-900 leading-tight">Mở khóa cả dải ngân hà kỹ năng</h2>
+                  <p className="text-[11px] text-slate-500 font-medium mt-1">Một tấm vé, trọn hành trình lớn khôn an toàn và đầy hứng khởi.</p>
+                </div>
+
+                {/* Tính năng nổi bật */}
+                <div className="w-full bg-[#EAF8F1] rounded-2xl p-3.5 mb-4 border border-[#C6EFE2] grid grid-cols-2 gap-2 text-left">
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-[#10B981] text-white flex items-center justify-center shrink-0">
+                      <Check size={10} />
                     </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                        selectedPlan === 'monthly' ? 'border-purple-400 bg-purple-500 text-white' : 'border-slate-600'
-                      }`}>
-                      {selectedPlan === 'monthly' && <Check size={14} strokeWidth={3} />}
+                    <span className="text-[11px] font-bold text-slate-700">Mở khóa tất cả hành tinh</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-[#10B981] text-white flex items-center justify-center shrink-0">
+                      <Check size={10} />
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-700">Không có quảng cáo</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-[#10B981] text-white flex items-center justify-center shrink-0">
+                      <Check size={10} />
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-700">Báo cáo chi tiết cho ba mẹ</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 rounded-full bg-[#10B981] text-white flex items-center justify-center shrink-0">
+                      <Check size={10} />
+                    </div>
+                    <span className="text-[11px] font-bold text-slate-700">Thử thách đặc biệt mỗi tuần</span>
+                  </div>
+                </div>
+
+                {/* Thẻ chọn gói cước */}
+                <div className="w-full flex gap-3 mb-4">
+                  <div 
+                    onClick={() => handleSelectPlan('monthly')}
+                    className={`flex-1 rounded-2xl p-3.5 border-2 cursor-pointer transition-all relative flex flex-col justify-between ${
+                      selectedPlan === 'monthly' 
+                        ? 'bg-[#FEF9C3] border-[#FACC15] shadow-md scale-[1.02]' 
+                        : 'bg-[#F3F4F6] border-slate-200 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <div>
+                        <span className="text-[11px] font-extrabold text-slate-500 block">Hàng tháng</span>
+                        <span className="text-base font-black text-slate-900">99.000đ</span>
+                      </div>
+                      {selectedPlan === 'monthly' && (
+                        <div className="w-5 h-5 rounded-full bg-[#10B981] text-white flex items-center justify-center">
+                          <Check size={12} />
+                        </div>
+                      )}
+                    </div>
+                    <span className="text-[10px] text-slate-500 font-semibold mt-2">/ tháng</span>
+                  </div>
+
+                  <div 
+                    onClick={() => handleSelectPlan('lifetime')}
+                    className={`flex-1 rounded-2xl p-3.5 border-2 cursor-pointer transition-all relative flex flex-col justify-between ${
+                      selectedPlan === 'lifetime' 
+                        ? 'bg-[#FEF9C3] border-[#FACC15] shadow-md scale-[1.02]' 
+                        : 'bg-[#F3F4F6] border-slate-200 hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex justify-between items-start w-full">
+                      <div>
+                        <span className="text-[11px] font-extrabold text-slate-500 block">Trọn đời</span>
+                        <span className="text-base font-black text-slate-900">599.000đ</span>
+                      </div>
+                      {selectedPlan === 'lifetime' && (
+                        <div className="w-5 h-5 rounded-full bg-[#10B981] text-white flex items-center justify-center">
+                          <Check size={12} />
+                        </div>
+                      )}
+                    </div>
+                    <div className="flex justify-between items-center mt-2">
+                      <span className="text-[10px] text-slate-500 font-semibold">Thanh toán một lần</span>
+                      <span className="bg-rose-500 text-white text-[9px] font-black px-1.5 py-0.5 rounded-full uppercase">Tiết kiệm nhất</span>
                     </div>
                   </div>
                 </div>
+
+                {/* Nút Tiếp tục thanh toán */}
+                <button
+                  onClick={handleProceedPayment}
+                  className="w-full hover:scale-[1.02] active:scale-95 transition-transform cursor-pointer mb-2"
+                >
+                  <img 
+                    src={`${import.meta.env.BASE_URL}images/premium/Container.png`} 
+                    alt="Tiếp tục thanh toán" 
+                    className="w-full object-contain drop-shadow-md" 
+                  />
+                </button>
+
+                <div className="flex items-center justify-center gap-1.5 text-slate-400 text-[11px] font-medium">
+                  <Shield size={12} />
+                  <span>Thanh toán được bảo mật • Phụ huynh xác nhận</span>
+                </div>
+              </div>
+            )}
+
+            {/* ================= BƯỚC 2: MÀN HÌNH QR (Cân chỉnh tỷ lệ 2 nút theo đúng kích thước gốc Figma) ================= */}
+            {step === 'qr' && (
+              <div className="relative w-full max-w-[460px] flex flex-col items-center">
                 
-
-                {/* Gói Trọn đời */}
-                <div
-                  onClick={() => {
-                    soundManager.playPop();
-                    setSelectedPlan('lifetime');
-                  }}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition-all flex items-center justify-between relative overflow-hidden ${
-                    selectedPlan === 'lifetime'
-                      ? 'bg-purple-950/40 border-purple-500 shadow-[0_0_20px_rgba(168,85,247,0.3)]'
-                      : 'bg-slate-800/60 border-slate-700 hover:border-slate-600'
-                  }`}
-                >
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-black text-base text-white">Trọn đời</span>
-                      <span className="bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-extrabold px-2 py-0.5 rounded-full">
-                        Tiết kiệm 37%
-                      </span>
-                    </div>
-                    <div className="text-xs text-slate-400 mt-1">Đầu tư một lần, chơi mãi mãi</div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                    <div className="text-right">
-                      <div className="font-black text-amber-400 text-lg">599.000đ</div>
-                      <div className="text-[10px] text-slate-400">/trọn đời</div>
-                    </div>
-                    <div className={`w-6 h-6 rounded-full border-2 flex items-center justify-center shrink-0 ${
-                        selectedPlan === 'lifetime' ? 'border-purple-400 bg-purple-500 text-white' : 'border-slate-600'
-                      }`}>
-                      {selectedPlan === 'lifetime' && <Check size={14} strokeWidth={3} />}
-                    </div>
+                {/* Khung QR chính */}
+                <div className="relative w-full flex justify-center">
+                  <img 
+                    src={`${import.meta.env.BASE_URL}images/premium/QR.png`} 
+                    alt="Trạm thanh toán QR" 
+                    className="w-full object-contain drop-shadow-2xl"
+                  />
+                  
+                  {/* Số tiền hiển thị */}
+                  <div className="absolute bottom-[23%] left-[49%] -translate-x-1/2 bg-[#FFC72C] text-slate-950 px-2 py-0.5 rounded text-[11px] font-black shadow-sm">
+                    {selectedPlan === 'monthly' ? '99.000đ' : '599.000đ'}
                   </div>
                 </div>
-              </div>
 
-              {/* Nút Đăng ký */}
-              <button
-                onClick={() => {
-                  soundManager.playPop();
-                  setShowQrStep(true);
-                }}
-                className="w-full py-4 bg-gradient-to-r from-amber-400 via-yellow-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-lg rounded-2xl shadow-[0_0_25px_rgba(245,158,11,0.5)] transition-all cursor-pointer active:scale-95"
-              >
-                Tiếp tục thanh toán ({selectedPlan === 'monthly' ? '59.000đ' : '599.000đ'})
-              </button>
-            </>
-          ) : (
-            /* Bước Quét Mã QR Thanh Toán */
-            <div className="text-center py-4">
-              <div className="inline-flex p-3 bg-amber-400/10 border border-amber-400/30 rounded-2xl text-amber-300 mb-3">
-                <QrCode size={32} />
-              </div>
-              <h3 className="text-xl font-bold mb-1">Quét mã QR để thanh toán</h3>
-              <p className="text-xs text-slate-400 mb-6">
-                Sử dụng ứng dụng Ngân hàng hoặc Momo để quét mã bên dưới
-              </p>
+                {/* Cụm 2 nút bấm chia tỷ lệ chuẩn theo đúng kích thước gốc Figma (276.12 : 441.88) */}
+                <div className="flex gap-2.5 w-full mt-3 px-1 items-center">
+                  <button
+                    onClick={handleBackToPlans}
+                    style={{ flex: '276.12' }}
+                    className="hover:scale-[1.02] active:scale-95 transition-transform cursor-pointer"
+                  >
+                    <img 
+                      src={`${import.meta.env.BASE_URL}images/premium/Button.png`} 
+                      alt="Quay lại" 
+                      className="w-full object-contain drop-shadow-md" 
+                    />
+                  </button>
 
-              {/* Ảnh QR CODE */}
-              <div className="bg-white p-2 rounded-2xl w-56 h-56 mx-auto mb-6 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden">
+                  <button
+                    onClick={handleConfirmTransfer}
+                    style={{ flex: '441.88' }}
+                    className="hover:scale-[1.02] active:scale-95 transition-transform cursor-pointer"
+                  >
+                    <img 
+                      src={`${import.meta.env.BASE_URL}images/premium/Button-1.png`} 
+                      alt="Tôi đã chuyển khoản" 
+                      className="w-full object-contain drop-shadow-md" 
+                    />
+                  </button>
+                </div>
+
+              </div>
+            )}
+
+            {/* ================= BƯỚC 3: THÀNH CÔNG ================= */}
+            {step === 'success' && (
+              <div className="relative w-full max-w-[460px] flex justify-center">
                 <img 
-                  // Đã đổi sang đuôi .png (Nếu file của bạn là .PNG viết hoa thì sửa lại thành .PNG nhé)
-                  src={`${import.meta.env.BASE_URL}images/QR.png`} 
-                  alt="Mã QR Thanh Toán" 
-                  className="w-full h-full object-contain rounded-xl"
-                  onError={(e) => {
-                    // Fallback nếu ảnh lỗi
-                    e.currentTarget.src = "https://placehold.co/400x400/png?text=QR+Code";
-                  }}
+                  src={`${import.meta.env.BASE_URL}images/premium/QR-1.png`} 
+                  alt="Thông tin đã được ghi nhận" 
+                  className="w-full object-contain drop-shadow-2xl"
                 />
-                {/* Nhãn hiển thị giá tiền nổi lên trên góc */}
-                <span className="absolute bottom-3 text-[11px] font-black text-amber-700 bg-amber-100/95 px-3 py-1.5 rounded-full shadow-md backdrop-blur-sm border border-amber-200">
-                  {selectedPlan === 'monthly' ? '59.000đ' : '599.000đ'}
-                </span>
               </div>
+            )}
 
-              {isSuccess ? (
-                <div className="bg-emerald-500/20 border border-emerald-500 text-emerald-300 py-3 rounded-xl font-bold flex items-center justify-center gap-2 animate-pulse">
-                  <Check size={20} /> Thanh toán thành công!
-                </div>
-              ) : (
-                <div className="flex gap-3">
-                  <button
-                    onClick={() => setShowQrStep(false)}
-                    className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-all cursor-pointer"
-                  >
-                    Quay lại
-                  </button>
-                  <button
-                    onClick={handlePaymentConfirm}
-                    className="flex-[1.5] py-3 bg-emerald-500 hover:bg-emerald-600 text-white font-black rounded-xl transition-all shadow-[0_0_15px_rgba(16,185,129,0.4)] cursor-pointer"
-                  >
-                    Tôi đã chuyển khoản
-                  </button>
-                </div>
-              )}
-            </div>
-          )}
-        </motion.div>
-      </div>
+          </motion.div>
+        </div>
+      )}
     </AnimatePresence>
   );
 };
